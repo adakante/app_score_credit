@@ -3,9 +3,3 @@ pandas
 matplotlib.pyplot 
 seaborn
 lime
-flask, request, jsonify
-pickle
-app = Flask(__name__)
-lime_tabular
-streamlit.components.v1 as cp
-
