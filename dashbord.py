@@ -30,6 +30,10 @@ def load_data():
                       'DAYS_REGISTRATION', 'DAYS_EMPLOYED', 'AMT_ANNUITY',
                       'DAYS_LAST_PHONE_CHANGE', 'AMT_CREDIT']
     
+    info_perso = ['NAME_CONTRACT_TYPE', 'CODE_GENDER', 'DAYS_BIRTH']
+    
+    df_info_perso = df_test[info_perso]
+    
     df_test = df_test[columns_explicative]
 
     # cust_ID = 'SK_ID_CURR'
@@ -53,9 +57,9 @@ def load_data():
     scaler.fit(df_test[columns_explicative])
     df_test[columns_explicative] = scaler.transform(df_test[columns_explicative])
     
-    return df_test
+    return df_test, df_info_perso
 
-data1=load_data()
+data1, data_info=load_data()
 
 #Title
 st.title('Dashboard Credit Scoring')
@@ -81,6 +85,18 @@ list_ind=list(data1.index)
 #sidebar
 id=st.sidebar.selectbox('choisir un client',list_ind)
 
+st.sidebar.write('Information personnelle du client')
+
+test = data_info[data_info.index == int(id)]
+
+for col in test.columns:    
+    st.sidebar.write(col+'        :        ' + str(test[col].values[0]))
+
+
+# test = data_info[data_info.index == 368974]
+
+# st.write('Informations utilisées pour la prédiction')
+
 st.dataframe(data1[data1.index == int(id)])
 
 # json
@@ -89,7 +105,7 @@ response=requests.post(url=url,json=data_json).json()
 st.write(response)
 
 # proba
-if int(response['prediction'])==1:
+if int(response['prediction'])==0:
     st.write('Le client est solvable avec une probabilité de '+str(response['probability']))
 else :
     st.write('Le client est non solvable avec une probabilité de '+str(response['probability']))
